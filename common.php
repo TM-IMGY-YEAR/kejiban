@@ -10,6 +10,7 @@ class DbconnectClass {
 			$db = new PDO ( $dsn, $user, $password );
 			// セキュリティ設定
 			$db->setAttribute ( PDO::ATTR_EMULATE_PREPARES, false );
+			return $db;//スーパーグローバル関数に返す
 		} catch ( PDOException $e ) {
 			die ( 'エラー' . $e->getMessage () );
 		}
