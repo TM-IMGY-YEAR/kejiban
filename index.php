@@ -2,8 +2,8 @@
 session_start();
 include "common.php";
 
-$_SESSION['username'];
-if (isset($_SESSION['username'])) {
+//$_SESSION['username'];
+if (isset($_SESSION['userid'])) {
         header('Location: /input.php');
         exit();
     }
@@ -15,21 +15,29 @@ if (isset($_POST['Login'])) {
 	}
 }
 $err = "";
-if (isBlank($_POST['userID'])==true){
+
+if (isBlank($_POST['userID'])){
 	$err='ID';
 }
-if (isBlank($_POST['password'])==true){
+if (isBlank($_POST['password'])){
 	$err.='パスワード';
 }
-if (isBlank($err)==true){
-	return;
+if (isBlank($err)){
+	//return;
 }else{
 	$err.="が入力されていません";
 }
 
-$stmt = $db->prepare("select from ACCOUNT WHERE USER_ID = $_POST['userID'] && ("select from ACCOUNT WHERE USER_PASS") = $_POST['password'];
-$stmt->execute();
-$row = $stmt->fetch();
+// $stmt = $db->prepare("select USER_ID, USER_PASS from ACCOUNT");
+// 		USER_ID == $_POST['userID'] && USER_PASS == $_POST['password'];
+
+// $stmt->execute();
+
+// $row = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+// $stmt = $db->prepare("select from ACCOUNT WHERE USER_ID = $_POST['userID'] && ("select from ACCOUNT WHERE USER_PASS") = $_POST['password'];
+// $stmt->execute();
+// $row = $stmt->fetch();
 ?>
 
 <!DOCTYPE html>
