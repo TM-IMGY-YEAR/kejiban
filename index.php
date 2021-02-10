@@ -7,7 +7,7 @@ include 'dbFunction.php';
 $db = new DBfunctionCLASS();
 
 if (isset($_SESSION['userId'])) {
-        header('Location: /input.php');
+        header('Location: ./input.php');
         exit();
 		}
 
@@ -26,35 +26,35 @@ if (isset($_POST['Login'])) {
 		}
 
 		if (isBlank($err)) {
-			$stmt = $db->getconnection()->prepare("select USER_ID, USER_PASS from ACCOUNT");
-			$stmt->execute();
-			$row = $stmt->fetch();
+ 			$stmt = $db->getconnection()->prepare("SELECT USER_ID, USER_PASS FROM ACCOUNT");
+ 			$stmt->execute();
+ 			//$row = $stmt->fetch();
 
-			if ($row['USER_ID'] == $_POST['userID'] && $row['USER_PASS'] == $_POST['password']) {
+ 			if ($row['USER_ID'] == $_POST['userID'] && $row['USER_PASS'] == $_POST['password']) {
 
-				$_SESSION['userId'] = ACCOUNT.USER_ID;
-				$_SESSION['userName'] = ACCOUNT.USER_NAME;
-				$_SESSION['email'] = ACCOUNT.EMAIL;
+ 				$_SESSION['userId'] = ACCOUNT.USER_ID;
+ 				$_SESSION['userName'] = ACCOUNT.USER_NAME;
+ 				$_SESSION['email'] = ACCOUNT.EMAIL;
 
-				$_SESSION['actionName'] = "index_login";
+ 				$_SESSION['actionName'] = "index_login";
 
-				header('Location: /input.php');  // メイン画面へ遷移
-				exit();  // 処理終了
+ 				header('Location: ./input.php');  // 一覧画面へ遷移
+ 				exit();  // 処理終了
 
-			}else{
+ 			}else{
 				$err = "「ID」「パスワード」が存在しません";
 
 			}
 
 		}else{
 			$err .= "が入力されていません";
-		}
+		}}
 
-	}
+		}
 
 	}else{
 	$_SESSION['actionName'] = "index_display";
-}
+	}
 
 
 // $stmt = $db->prepare("select USER_ID, USER_PASS from ACCOUNT");
