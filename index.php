@@ -1,10 +1,10 @@
 <?php
-
 session_start( );
 
-include 'dbFunction.php';
+include 'dbconnect.php';
+include 'Function.php';
 
-$db = new DBfunctionCLASS();
+$db = new DBconnnectCLASS();
 
 if (isset($_SESSION['userId'])) {
         header('Location: ./input.php');
@@ -26,48 +26,33 @@ if (isset($_POST['Login'])) {
 		}
 
 		if (isBlank($err)) {
-			$query2 = "select USER_PASS from ACCOUNT where USER_ID = (select USER_ID from ACCOUNT where USER_ID=:userid)";
-			$stmt = $db->getconnection()->prepare($query2);
-			$stmt->bindValue(":userid", $_POST['userId'], PDO::PARAM_STR);
+			$stmt = $db->getconnnect()->prepare("select USER_ID, USER_NAME, EMAIL from ACCOUNT where USER_ID=:userID AND USER_PASS=:userPS;");
+			$stmt->bindParam(":userID", $_POST['userID'], PDO::PARAM_STR);
+			$stmt->bindParam(":userPS", $_POST['password'], PDO::PARAM_STR);
 			$stmt->execute();
-			$count = $stmt ->fetchColumn();
+			$row = $stmt->fetch();
 
-			if ($_POST['password'] == $count) {
+				if ($row['EMAIL'] =="" && $row['USER_NAME'] =="" && $row['USER_ID'] =="") {
 
-				$_SESSION['userId'] = ACCOUNT.USER_ID;
-				$_SESSION['userName'] = ACCOUNT.USER_NAME;
-				$_SESSION['email'] = ACCOUNT.EMAIL;
+				$err = "「ID]「パスワード」が存在しません";
+			}else{
+				$_SESSION['userId'] = $row['USER_ID'];
+				$_SESSION['username'] = $row['USER_NAME'];
+				$_SESSION['email'] = $row['EMAIL'];
 
 				$_SESSION['actionName'] = "index_login";
 
 				header('Location: ./input.php');  // 一覧画面へ遷移
 				exit();  // 処理終了
-
-			}else{
-				$err = "「ID]「パスワード」が存在しません";
-			}
+				}
 
 		}else{
 			$err .="が入力されていません" ;
+			}
 		}
-	}
 	}else{
 	$_SESSION['actionName'] = "index_display";
 }
-
-
-// $stmt = $db->prepare("select USER_ID, USER_PASS from ACCOUNT");
-// 		USER_ID == $_POST['userID'] && USER_PASS == $_POST['password'];
-
-// $stmt->execute();
-
-// $row = $stmt -> fetchAll(PDO::FETCH_ASSOC);
-
-// $stmt = $db->prepare("select from ACCOUNT WHERE USER_ID = $_POST['userID'] && ("select from ACCOUNT WHERE USER_PASS") = $_POST['password'];
-// $stmt->execute();
-// $row = $stmt->fetch();
-
-
 
 ?>
 
@@ -90,7 +75,7 @@ if (isset($_POST['Login'])) {
 		<form action="" method="POST" name="Form1">
 			<p>
 				<label class="itemName">ID:</label>
-				<input type="text" name="userID" value="<?php if (!empty($_POST["userID"])) {echo htmlspecialchars($_POST["userID"], ENT_QUOTES);} ?>">
+				<input type="text" name="userID" value="<?php if (!isBlank($_POST["userID"])) {echo htmlspecialchars($_POST["userID"], ENT_QUOTES);} ?>">
 			</p>
 			<p>
 				<label class="itemName">パスワード:</label>
