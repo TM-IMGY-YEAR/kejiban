@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./css/master.css" type="text/css">
+  <title>掲示板</title>
+</head>
+<body>
+<header>
+   掲示板
+</header>
+<main>
+  <div>
+     <p>あなたのIDとパスワードを入力してログインしてください。</p>
+     <form action="./input.html" method="post" name="Form1" onSubmit="return chkField1()">
+       <p>
+          <label>ID:</label>
+          <input type="text" name="userID" value="">
+       </p>
+       <p>
+          <label>パスワード:</label>
+          <input type="password" name="password">
+       </p>
+       <div>
+          <input class="button" type="submit" name="Login" value="ログイン">
+       </div>
+     </form>
+    </div>
+</main>
+<script>
+   function chkField1(){
+       if (document.Form1.userID.value == ""
+        || document.Form1.password.value == "") {
+           alert("必須項目が入力されていません。");
+           return false;
+       } else {
+           alert("ID:" + document.Form1.userID.value + " password:" + document.Form1.password.value);
+           return true;
+       }
+   }
+</script>
+</body>
+</html>

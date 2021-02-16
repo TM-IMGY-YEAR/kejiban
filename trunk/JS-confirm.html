@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+   <meta charset="UTF-8">
+   <link rel="stylesheet" href="./css/master.css" type="text/css">
+   <title>掲示板</title>
+</head>
+<body>
+<header>
+  掲示板
+</header>
+<main>
+   <div>
+     <p>以下の内容で投稿します。</p>
+     <form action="./complete.html" method="post">
+        <div>
+        <table class="inputArticle">
+           <tr>
+              <td class="itemName"><div>名前</div></td>
+              <td><div style="color:#ff9900">テスト5</div></td>
+           </tr>
+           <tr>
+              <td class="itemName"><div>E-mail</div></td>
+              <td><div style="color:#ff9900">　</div></td>
+           </tr>
+           <tr>
+              <td class="itemName"><div>タイトル</div></td>
+              <td><div style="color:#ff9900">テストタイトル５</div></td>
+           </tr>
+           <tr>
+              <td class="itemName"><div>本文</div></td>
+              <td><div style="color:#9900">テスト本文５</div></td>
+           </tr>
+        </table>
+     </div>
+     <div>
+        <input class="button" type="button" name="Back"   value="戻る" onClick="history.back()">
+        <input class="button" type="submit" name="Submit" value="投稿">
+     </div>
+   </form>
+ </div>
+</main>
+</body>
+</html>

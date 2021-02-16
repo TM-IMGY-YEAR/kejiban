@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 session_regenerate_id(true);
 
 if (!isset($_SESSION['userId'])) {
@@ -7,8 +8,8 @@ if (!isset($_SESSION['userId'])) {
 	exit();
 }
 
-if (isset($_POST['back'])) {
-	if ($_POST['back'] == "一覧画面に戻る") {
+if (isset($_POST['Back'])) {
+	if ($_POST['Back'] == "一覧画面に戻る") {
 		$_SESSION['actionName'] = "complete_back";
 
 		header('Location: ./input.php');
@@ -17,27 +18,25 @@ if (isset($_POST['back'])) {
 }
 
 $_SESSION['actionName'] = "complete_display";
-
 ?>
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="./css/master.css" type="text/css">
-	<title>掲示板</title>
+   <meta charset="UTF-8">
+   <link rel="stylesheet" href="./css/master.css" type="text/css">
+   <title>掲示板</title>
 </head>
 <body>
 <header>
-掲示板
+  掲示板
 </header>
 <main>
-	<div>
-		<p>投稿が完了しました。</p>
-		<form action="" method="post">
-			<p><input class="button" type="submit" name="back" value="一覧画面に戻る"></p>
-		</form>
-	</div>
+    <div>
+       <p>投稿が完了しました。</p>
+       <form action="" method="post">
+          <p><input class="button" type="submit" name="Back" value="一覧画面に戻る"></p>
+       </form>
+    </div>
 </main>
 </body>
 </html>
