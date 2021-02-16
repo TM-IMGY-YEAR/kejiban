@@ -1,8 +1,8 @@
 <?php
 
-class DBconnnectCLASS {
+class DbconnectClass {
 
-public function getconnnect(){
+public function getconnect(){
 
 		$dsn = 'mysql:host=localhost;dbname=SLJ;charset=utf8';
 		$user = 'root';

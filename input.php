@@ -2,9 +2,9 @@
 session_start();
 
 include 'dbconnect.php';
-include 'Function.php';
+include 'function.php';
 
-$db = new DBconnnectCLASS();
+$db = new DbconnectClass();
 
 session_regenerate_id(true);
 
@@ -22,7 +22,6 @@ if (!isset($_SESSION['userId'])) {
 }
 
 if (isset($_POST['clear'])) {
-	if ($_POST['clear'] == "クリア") {
 		$_SESSION['username'] = "";
 		$_SESSION['email'] = "";
 		$_SESSION['title'] = "";
@@ -30,19 +29,15 @@ if (isset($_POST['clear'])) {
 		$_SESSION['color'] = "";
 
 		$_SESSION['actionName'] = "input_clear";
-	}
 
-}elseif (isset($_POST['Submit'])) {
-	if ($_POST['Submit'] == "確認") {
+}elseif (isset($_POST['submit'])) {
 
-		if (isset($_POST['token'])) {
-			if ($_SESSION['token'] !== $_POST['token']) {
-				$_SESSION = array();
-				session_destroy();
+		if ($_SESSION['token'] !== $_POST['token']) {
+			$_SESSION = array();
+			session_destroy();
 
-				header('Location: ./index.php');
-				exit();
-			}
+			header('Location: ./index.php');
+			exit();
 		}
 
 		$_SESSION['username'] = $_POST['name'];
@@ -58,11 +53,11 @@ if (isset($_POST['clear'])) {
 		}
 
 		if (!checkLen($_POST['title'], 50)) {
-			$err = "タイトルは50文字以内におさめてください。<br>";
+			$err .= "タイトルは50文字以内におさめてください。<br>";
 		}
 
 		if (isBlank($_POST['text'])) {
-			$err = "本文を入力してください。";
+			$err .= "本文を入力してください。";
 		}
 
 		if (isBlank($err)) {
@@ -71,7 +66,6 @@ if (isset($_POST['clear'])) {
 			header('Location: ./confirm.php');  // 確認画面へ遷移
 			exit();  // 処理終了
 		}
-	}
 }else{
 	$_SESSION['actionName'] = "input_display";
 }
@@ -92,7 +86,7 @@ if (isset($_POST['clear'])) {
 </header>
 <main>
 	<div>
-		<form action="" method="POST">
+		<form method="POST">
 			<div>
 				<table class="inputArticle">
 					<tr>
@@ -123,7 +117,7 @@ if (isset($_POST['clear'])) {
 						<td	class="itemName" id="moji" ><div>文字色</div></td>
 						<td><div>
 							<?php
-							$stmt = $db->getconnnect()->prepare("select COLOR_ID, COLOR_CODE, COLOR_NAME from COLOR_MASTER;");
+							$stmt = $db->getconnect()->prepare("select COLOR_ID, COLOR_CODE, COLOR_NAME from COLOR_MASTER;");
 							$stmt->execute();
 
 								while ($row = $stmt->fetch()) {
@@ -151,7 +145,7 @@ if (isset($_POST['clear'])) {
 			</div>
 			<div>
 				<input class="button" type="submit" name="clear" value="クリア">
-				<input class="button" type="submit" name="Submit" value="確認">
+				<input class="button" type="submit" name="submit" value="確認">
 				<input class="button" type="submit" name="logout" value="ログアウト">
 				<?php
 					$token = hash(sha256, session_id());
@@ -162,7 +156,7 @@ if (isset($_POST['clear'])) {
 		</form>
 		<hr>
 		<?php
-			$stmt2 = $db->getconnnect()->prepare("select ARTICLE_ID, CREATE_DATE, NAME, EMAIL, TITLE, TEXT, COLOR_CODE from ARTICLE A inner JOIN COLOR_MASTER B on A.COLOR_ID = B.COLOR_ID order by CREATE_DATE DESC;");
+			$stmt2 = $db->getconnect()->prepare("select ARTICLE_ID, CREATE_DATE, NAME, EMAIL, TITLE, TEXT, COLOR_CODE from ARTICLE A inner JOIN COLOR_MASTER B on A.COLOR_ID = B.COLOR_ID order by CREATE_DATE DESC;");
 			$stmt2->execute();
 			while ($row2 = $stmt2->fetch()) {
 		?>

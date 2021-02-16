@@ -2,19 +2,17 @@
 session_start( );
 
 include 'dbconnect.php';
-include 'Function.php';
+include 'function.php';
 
-$db = new DBconnnectCLASS();
+$db = new DbconnectClass();
 
 if (isset($_SESSION['userId'])) {
         header('Location: ./input.php');
         exit();
 		}
 
-if (isset($_POST['Login'])) {
+if (isset($_POST['login'])) {
 		//シートログイン押下時の記述
-	if ($_POST['Login'] == 'ログイン') {
-
 		$err = "";
 
 		if (isBlank($_POST['userID'])) {
@@ -26,7 +24,7 @@ if (isset($_POST['Login'])) {
 		}
 
 		if (isBlank($err)) {
-			$stmt = $db->getconnnect()->prepare("select USER_ID, USER_NAME, EMAIL from ACCOUNT where USER_ID=:userID AND USER_PASS=:userPS;");
+			$stmt = $db->getconnect()->prepare("select USER_ID, USER_NAME, EMAIL from ACCOUNT where USER_ID=:userID AND USER_PASS=:userPS;");
 			$stmt->bindParam(":userID", $_POST['userID'], PDO::PARAM_STR);
 			$stmt->bindParam(":userPS", $_POST['password'], PDO::PARAM_STR);
 			$stmt->execute();
@@ -49,7 +47,7 @@ if (isset($_POST['Login'])) {
 		}else{
 			$err .="が入力されていません" ;
 			}
-		}
+
 	}else{
 	$_SESSION['actionName'] = "index_display";
 }
@@ -72,17 +70,17 @@ if (isset($_POST['Login'])) {
 	<div>
 		<p>あなたのIDとパスワードを入力してログインしてください。</p>
 		<p><?php echo '<FONT COLOR="RED">'.$err.'</FONT>'; ?></p>
-		<form action="" method="POST" name="Form1">
+		<form method="POST" >
 			<p>
 				<label class="itemName">ID:</label>
-				<input type="text" name="userID" value="<?php if (!isBlank($_POST["userID"])) {echo htmlspecialchars($_POST["userID"], ENT_QUOTES);} ?>">
+				<input type="text" name="userID" value="">
 			</p>
 			<p>
 				<label class="itemName">パスワード:</label>
 				<input type="password" name="password" value="">
 			</p>
 			<div>
-				<input class="button" type="submit" name="Login" value="ログイン">
+				<input class="button" type="submit" name="login" value="ログイン">
 			</div>
 		</form>
 	</div>

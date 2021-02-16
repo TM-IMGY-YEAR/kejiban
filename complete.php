@@ -8,14 +8,12 @@ if (!isset($_SESSION['userId'])) {
 	exit();
 }
 
-if (isset($_POST['Back'])) {
-	if ($_POST['Back'] == "一覧画面に戻る") {
-		$_SESSION['actionName'] = "complete_back";
+if (isset($_POST['back'])) {
++		$_SESSION['actionName'] = "complete_back";
 
 		header('Location: ./input.php');
 		exit();
 	}
-}
 
 $_SESSION['actionName'] = "complete_display";
 
@@ -36,7 +34,7 @@ $_SESSION['actionName'] = "complete_display";
 	<div>
 		<p>投稿が完了しました。</p>
 		<form action="" method="post">
-			<p><input class="button" type="submit" name="Back" value="一覧画面に戻る"></p>
+			<p><input class="button" type="submit" name="back" value="一覧画面に戻る"></p>
 		</form>
 	</div>
 </main>

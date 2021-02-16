@@ -2,9 +2,9 @@
 session_start();
 
 include 'dbconnect.php';
-include 'Function.php';
+include 'function.php';
 
-$db = new DBconnnectCLASS();
+$db = new DbconnectClass();
 
 session_regenerate_id(true);
 
@@ -13,61 +13,56 @@ if (!isset($_SESSION['userId'])) {
 	exit();
 }
 
-if (isset($_POST['Back'])) {
-	if ($_POST['Back'] == "戻る") {
+if (isset($_POST['back'])) {
 		$_SESSION['actionName'] = "confirm_back";
 
 		header('Location: ./input.php');
 		exit();
-	}
 }
 
-if (isset($_POST['Submit'])) {
-	if ($_POST['Submit'] == "投稿") {
+if (isset($_POST['submit'])) {
 
-		if (isset($_POST['token'])) {
-			if ($_SESSION['token'] !== $_POST['token']) {
-				$_SESSION = array();
-				session_destroy();
+	if ($_SESSION['token'] !== $_POST['token']) {
+		$_SESSION = array();
+		session_destroy();
 
-				header('Location: ./index.php');
-				exit();
-			}
-		}
-
-		if (!checkEmail($_SESSION['email']) || !checkLen($_SESSION['title'], 50) || isBlank($_SESSION['text'])) {
-
-			header('Location: ./input.php');
-			exit();
-		}
-
-
-		$stmt = $db->getconnnect()->prepare('insert into ARTICLE (CREATE_DATE,NAME,EMAIL,TITLE,TEXT,COLOR_ID,DEL_FLG) values(now(),:name,:email,:title,:text,:colorID,0)');
-		$stmt->bindParam(':name',$_SESSION['username'], PDO::PARAM_STR);
-		$stmt->bindParam(':email',$_SESSION['email'], PDO::PARAM_STR);
-		$stmt->bindParam(':title',$_SESSION['title'], PDO::PARAM_STR);
-		$stmt->bindParam(':text',$_SESSION['text'], PDO::PARAM_STR);
-		$stmt->bindParam(':colorID',$_SESSION['color'], PDO::PARAM_STR);
-		$stmt->execute();
-
-
-		$_SESSION['title'] = "";
-		$_SESSION['text'] = "";
-		$_SESSION['color'] ="";
-
-		$_SESSION['actionName'] = "confirm_post";
-
-		header('Location: ./complete.php');
+		header('Location: ./index.php');
 		exit();
-
 	}
+
+
+	if (!checkEmail($_SESSION['email']) || !checkLen($_SESSION['title'], 50) || isBlank($_SESSION['text'])) {
+
+		header('Location: ./input.php');
+		exit();
+	}
+
+
+	$stmt = $db->getconnect()->prepare('insert into ARTICLE (CREATE_DATE,NAME,EMAIL,TITLE,TEXT,COLOR_ID,DEL_FLG) values(now(),:name,:email,:title,:text,:colorID,0)');
+	$stmt->bindParam(':name',$_SESSION['username'], PDO::PARAM_STR);
+	$stmt->bindParam(':email',$_SESSION['email'], PDO::PARAM_STR);
+	$stmt->bindParam(':title',$_SESSION['title'], PDO::PARAM_STR);
+	$stmt->bindParam(':text',$_SESSION['text'], PDO::PARAM_STR);
+	$stmt->bindParam(':colorID',$_SESSION['color'], PDO::PARAM_STR);
+	$stmt->execute();
+
+
+	$_SESSION['title'] = "";
+	$_SESSION['text'] = "";
+	$_SESSION['color'] ="";
+
+	$_SESSION['actionName'] = "confirm_post";
+
+	header('Location: ./complete.php');
+	exit();
+
 }
 
 if ($_SESSION['actionName'] == "input_check") {
 
 	$_SESSION['actionName'] = "confirm_display";
 
-	$stmt2 = $db->getconnnect()->prepare("select COLOR_CODE from COLOR_MASTER where COLOR_ID=:colorID;");
+	$stmt2 = $db->getconnect()->prepare("select COLOR_CODE from COLOR_MASTER where COLOR_ID=:colorID;");
 	$stmt2->bindParam(":colorID", $_SESSION['color'], PDO::PARAM_STR);
 	$stmt2->execute();
 	$row = $stmt2->fetch();
@@ -94,7 +89,7 @@ if ($_SESSION['actionName'] == "input_check") {
 <main>
 	<div>
 		<p>以下の内容で投稿します。</p>
-		<form action="" method="POST">
+		<form method="POST">
 			<div>
 			<table class="inputArticle">
 				<tr>
@@ -132,8 +127,8 @@ if ($_SESSION['actionName'] == "input_check") {
 			</table>
 		</div>
 		<div>
-			<input class="button" type="submit" name="Back" value="戻る">
-			<input class="button" type="submit" name="Submit" value="投稿">
+			<input class="button" type="submit" name="back" value="戻る">
+			<input class="button" type="submit" name="submit" value="投稿">
 			<?php
 					$token = hash(sha256, session_id());
 					$_SESSION['token'] = $token;
