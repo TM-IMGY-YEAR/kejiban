@@ -8,14 +8,6 @@ $db = new DbconnectClass();
 
 session_regenerate_id(true);
 
-//仮設ログアウト
-if(isset($_POST['logout']) ) {
-	unset($_SESSION['title']);
-	unset($_SESSION['text']);
-	unset($_SESSION['color']);
-	unset($_SESSION['userId']);
-}
-
 if (!isset($_SESSION['userId'])) {
 	header('Location: ./index.php');
 	exit();
@@ -117,7 +109,7 @@ if (isset($_POST['clear'])) {
 						<td	class="itemName" id="moji" ><div>文字色</div></td>
 						<td><div>
 							<?php
-							$stmt = $db->getconnect()->prepare("select COLOR_ID, COLOR_CODE, COLOR_NAME from COLOR_MASTER;");
+							$stmt = $db->getDbconnect()->prepare("select COLOR_ID, COLOR_CODE, COLOR_NAME from COLOR_MASTER;");
 							$stmt->execute();
 
 								while ($row = $stmt->fetch()) {
@@ -146,17 +138,16 @@ if (isset($_POST['clear'])) {
 			<div>
 				<input class="button" type="submit" name="clear" value="クリア">
 				<input class="button" type="submit" name="submit" value="確認">
-				<input class="button" type="submit" name="logout" value="ログアウト">
 				<?php
 					$token = hash(sha256, session_id());
 					$_SESSION['token'] = $token;
 				?>
-					<input type="hidden" name="token" value="<?=$token?>">
+					<input type="hidden" name="token" value="<?php echo $token ?>">
 			</div>
 		</form>
 		<hr>
 		<?php
-			$stmt2 = $db->getconnect()->prepare("select ARTICLE_ID, CREATE_DATE, NAME, EMAIL, TITLE, TEXT, COLOR_CODE from ARTICLE A inner JOIN COLOR_MASTER B on A.COLOR_ID = B.COLOR_ID order by CREATE_DATE DESC;");
+			$stmt2 = $db->getDbconnect()->prepare("select ARTICLE_ID, CREATE_DATE, NAME, EMAIL, TITLE, TEXT, COLOR_CODE from ARTICLE A inner JOIN COLOR_MASTER B on A.COLOR_ID = B.COLOR_ID order by CREATE_DATE DESC;");
 			$stmt2->execute();
 			while ($row2 = $stmt2->fetch()) {
 		?>
@@ -179,6 +170,7 @@ if (isset($_POST['clear'])) {
 				</tr>
 				<tr>
 					<td class="articleDate" colspan="2"><div>
+						<!-- strtotimeでタイムスタンプへ変換 -->
 						<?php echo date("Y年m月d日 H時i分", strtotime($row2['CREATE_DATE'])); ?>
 						<?php
 						if (isBlank($row2['NAME'])) {

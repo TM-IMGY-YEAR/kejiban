@@ -2,7 +2,7 @@
 
 class DbconnectClass {
 
-public function getconnect(){
+public function getDbconnect(){
 
 		$dsn = 'mysql:host=localhost;dbname=SLJ;charset=utf8';
 		$user = 'root';

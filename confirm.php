@@ -38,7 +38,7 @@ if (isset($_POST['submit'])) {
 	}
 
 
-	$stmt = $db->getconnect()->prepare('insert into ARTICLE (CREATE_DATE,NAME,EMAIL,TITLE,TEXT,COLOR_ID,DEL_FLG) values(now(),:name,:email,:title,:text,:colorID,0)');
+	$stmt = $db->getDbconnect()->prepare('insert into ARTICLE (CREATE_DATE,NAME,EMAIL,TITLE,TEXT,COLOR_ID,DEL_FLG) values(now(),:name,:email,:title,:text,:colorID,0)');
 	$stmt->bindParam(':name',$_SESSION['username'], PDO::PARAM_STR);
 	$stmt->bindParam(':email',$_SESSION['email'], PDO::PARAM_STR);
 	$stmt->bindParam(':title',$_SESSION['title'], PDO::PARAM_STR);
@@ -62,7 +62,7 @@ if ($_SESSION['actionName'] == "input_check") {
 
 	$_SESSION['actionName'] = "confirm_display";
 
-	$stmt2 = $db->getconnect()->prepare("select COLOR_CODE from COLOR_MASTER where COLOR_ID=:colorID;");
+	$stmt2 = $db->getDbconnect()->prepare("select COLOR_CODE from COLOR_MASTER where COLOR_ID=:colorID;");
 	$stmt2->bindParam(":colorID", $_SESSION['color'], PDO::PARAM_STR);
 	$stmt2->execute();
 	$row = $stmt2->fetch();
@@ -133,7 +133,7 @@ if ($_SESSION['actionName'] == "input_check") {
 					$token = hash(sha256, session_id());
 					$_SESSION['token'] = $token;
 				?>
-					<input type="hidden" name="token" value="<?=$token?>">
+					<input type="hidden" name="token" value="<?php echo $token ?>">
 		</div>
 		</form>
 	</div>

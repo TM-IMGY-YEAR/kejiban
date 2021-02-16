@@ -24,31 +24,32 @@ if (isset($_POST['login'])) {
 		}
 
 		if (isBlank($err)) {
-			$stmt = $db->getconnect()->prepare("select USER_ID, USER_NAME, EMAIL from ACCOUNT where USER_ID=:userID AND USER_PASS=:userPS;");
+			$stmt = $db->getDbconnect()->prepare("select USER_ID, USER_NAME, EMAIL from ACCOUNT where USER_ID=:userID AND USER_PASS=:userPS;");
 			$stmt->bindParam(":userID", $_POST['userID'], PDO::PARAM_STR);
 			$stmt->bindParam(":userPS", $_POST['password'], PDO::PARAM_STR);
 			$stmt->execute();
-			$row = $stmt->fetch();
 
-				if ($row['EMAIL'] =="" && $row['USER_NAME'] =="" && $row['USER_ID'] =="") {
+				if ($row = $stmt->fetch()) {
+					$_SESSION['userId'] = $row['USER_ID'];
+					$_SESSION['username'] = $row['USER_NAME'];
+					$_SESSION['email'] = $row['EMAIL'];
 
-				$err = "「ID]「パスワード」が存在しません";
-			}else{
-				$_SESSION['userId'] = $row['USER_ID'];
-				$_SESSION['username'] = $row['USER_NAME'];
-				$_SESSION['email'] = $row['EMAIL'];
+					$_SESSION['actionName'] = "index_login";
 
-				$_SESSION['actionName'] = "index_login";
+					header('Location: ./input.php');  // 一覧画面へ遷移
+					exit();  // 処理終了
 
-				header('Location: ./input.php');  // 一覧画面へ遷移
-				exit();  // 処理終了
-				}
+				}else{
+
+					$err = "「ID]「パスワード」が存在しません";
+
+					}
 
 		}else{
 			$err .="が入力されていません" ;
 			}
 
-	}else{
+}else{
 	$_SESSION['actionName'] = "index_display";
 }
 
@@ -70,7 +71,7 @@ if (isset($_POST['login'])) {
 	<div>
 		<p>あなたのIDとパスワードを入力してログインしてください。</p>
 		<p><?php echo '<FONT COLOR="RED">'.$err.'</FONT>'; ?></p>
-		<form method="POST" >
+		<form action="./index.php" method="POST" >
 			<p>
 				<label class="itemName">ID:</label>
 				<input type="text" name="userID" value="">
