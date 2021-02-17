@@ -1,7 +1,7 @@
 <?php
 
 function checkEmail($param1) {
-	$limit = '/^[a-zA-Z0-9]@test\.co\.jp$/';
+	$limit = '/^[a-zA-Z0-9]+@test\.co\.jp$/';
 	//半角英数字を1文字以上使用し、末尾に@test.co.jpのアドレスを$で固定。
 	if ($param1 != "" && !preg_match($limit, $param1)) {
 		return false;
