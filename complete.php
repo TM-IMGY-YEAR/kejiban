@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 session_regenerate_id(true);
@@ -9,11 +10,11 @@ if (!isset($_SESSION['userId'])) {
 }
 
 if (isset($_POST['back'])) {
-+		$_SESSION['actionName'] = "complete_back";
+	$_SESSION['actionName'] = "complete_back";
 
-		header('Location: ./input.php');
-		exit();
-	}
+	header('Location: ./input.php'); // 一覧画面へ遷移
+	exit(); // 処理終了
+}
 
 $_SESSION['actionName'] = "complete_display";
 
@@ -33,7 +34,7 @@ $_SESSION['actionName'] = "complete_display";
 <main>
 	<div>
 		<p>投稿が完了しました。</p>
-		<form action="" method="post">
+		<form action="./complete.php" method="post">
 			<p><input class="button" type="submit" name="back" value="一覧画面に戻る"></p>
 		</form>
 	</div>

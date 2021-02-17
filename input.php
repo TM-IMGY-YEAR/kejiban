@@ -1,10 +1,9 @@
 <?php
+
 session_start();
 
 include 'dbconnect.php';
 include 'function.php';
-
-$db = new DbconnectClass();
 
 session_regenerate_id(true);
 
@@ -14,50 +13,51 @@ if (!isset($_SESSION['userId'])) {
 }
 
 if (isset($_POST['clear'])) {
-		$_SESSION['username'] = "";
-		$_SESSION['email'] = "";
-		$_SESSION['title'] = "";
-		$_SESSION['text'] = "";
-		$_SESSION['color'] = "";
+	$_SESSION['userName']	= "";
+	$_SESSION['email'] 		= "";
+	$_SESSION['title']		= "";
+	$_SESSION['text']		= "";
+	$_SESSION['color']		= "";
 
-		$_SESSION['actionName'] = "input_clear";
+	$_SESSION['actionName'] = "input_clear";
 
 }elseif (isset($_POST['submit'])) {
 
-		if ($_SESSION['token'] !== $_POST['token']) {
-			$_SESSION = array();
-			session_destroy();
+	if ($_SESSION['token'] !== $_POST['token']) {
+		$_SESSION = array();
+		session_destroy();
 
-			header('Location: ./index.php');
-			exit();
-		}
+		header('Location: ./index.php');
+		exit();
+	}
 
-		$_SESSION['username'] = $_POST['name'];
-		$_SESSION['email'] = $_POST['email'];
-		$_SESSION['title'] = $_POST['title'];
-		$_SESSION['text'] = $_POST['text'];
-		$_SESSION['color'] = $_POST['color'];
+	$_SESSION['userName']	= $_POST['name'];
+	$_SESSION['email']		= $_POST['email'];
+	$_SESSION['title']		= $_POST['title'];
+	$_SESSION['text']		= $_POST['text'];
+	$_SESSION['color']		= $_POST['color'];
 
-		$err = "";
+	$err = "";
 
-		if (!checkEmail($_POST['email'])) {
-			$err = "E-mailは未記入、または半角英数字@test.co.jpを入力してください。 <br>";
-		}
+	if (!checkEmail($_POST['email'])) {
+		$err .= "E-mailは未記入、または半角英数字@test.co.jpを入力してください。 <br>";
+	}
 
-		if (!checkLen($_POST['title'], 50)) {
-			$err .= "タイトルは50文字以内におさめてください。<br>";
-		}
+	if (!checkLen($_POST['title'], 50)) {
+		$err .= "タイトルは50文字以内におさめてください。<br>";
+	}
 
-		if (isBlank($_POST['text'])) {
-			$err .= "本文を入力してください。";
-		}
+	if (isBlank($_POST['text'])) {
+		$err .= "本文を入力してください。";
+	}
 
-		if (isBlank($err)) {
-			$_SESSION['actionName'] = "input_check";
+	if (isBlank($err)) {
+		$_SESSION['actionName'] = "input_check";
 
-			header('Location: ./confirm.php');  // 確認画面へ遷移
-			exit();  // 処理終了
-		}
+		header('Location: ./confirm.php');  // 確認画面へ遷移
+		exit();  // 処理終了
+	}
+
 }else{
 	$_SESSION['actionName'] = "input_display";
 }
@@ -78,58 +78,73 @@ if (isset($_POST['clear'])) {
 </header>
 <main>
 	<div>
-		<form method="POST">
+		<form action="./input.php" method="post">
 			<div>
 				<table class="inputArticle">
 					<tr>
 						<td class="itemName" id="i_name" ><div>名前</div></td>
 						<td><div>
-							<input type="text" name="name"  value="<?php echo htmlspecialchars($_SESSION['username'],ENT_QUOTES,"UTF-8"); ?>" >
+							<input type="text" name="name"
+								value="<?php echo htmlspecialchars($_SESSION['userName'],ENT_QUOTES,"UTF-8"); ?>" >
 						</div></td>
 					</tr>
 					<tr>
 						<td class="itemName" id="i_mail" ><div>E-mail</div></td>
 						<td><div>
-							<input type="text" name="email" value="<?php echo htmlspecialchars($_SESSION['email'],ENT_QUOTES,"UTF-8"); ?>" >
+							<input type="text" name="email"
+								value="<?php echo htmlspecialchars($_SESSION['email'],ENT_QUOTES,"UTF-8"); ?>" >
 						</div></td>
 					</tr>
 					<tr>
 						<td class="itemName" id="i_title"><div>タイトル</div></td>
 						<td><div>
-							<input type="text" name="title" value="<?php echo htmlspecialchars($_SESSION['title'],ENT_QUOTES,"UTF-8"); ?>" >
+							<input type="text" name="title"
+								value="<?php echo htmlspecialchars($_SESSION['title'],ENT_QUOTES,"UTF-8"); ?>" >
 						</div></td>
 					</tr>
 					<tr>
 						<td class="itemName" id="i_text" ><div>本文</div></td>
 						<td><div>
-							<textarea name="text" cols="35" rows="5" ><?php echo htmlspecialchars($_SESSION['text'],ENT_QUOTES,"UTF-8"); ?></textarea>
+							<textarea name="text" cols="35" rows="5" ><?php
+							echo htmlspecialchars($_SESSION['text'],ENT_QUOTES,"UTF-8"); ?></textarea>
 						</div></td>
 					</tr>
 					<tr>
 						<td	class="itemName" id="moji" ><div>文字色</div></td>
 						<td><div>
 							<?php
-							$stmt = $db->getDbconnect()->prepare("select COLOR_ID, COLOR_CODE, COLOR_NAME from COLOR_MASTER;");
+							//->でクラスのメソッド(getDbconnect)にアクセス、fetchでCOLOR_ID, COLOR_CODE, COLOR_NAMEを取得
+							$db = new DbconnectClass();
+							$stmt = $db->getDbconnect()->prepare(
+									"select
+										COLOR_ID,
+										COLOR_CODE,
+										COLOR_NAME
+									from
+										COLOR_MASTER;");
 							$stmt->execute();
 
-								while ($row = $stmt->fetch()) {
+							//whileでfetchを繰り返し処理
+							while ($row = $stmt->fetch()) {
 
-								?>
-								<input class="radio" type="radio" name="color" value="<?php echo $row['COLOR_ID'];?>" id=<?php echo $row['COLOR_ID'];?>
+						?>
+							<input class="radio" type="radio" name="color" value="<?php echo $row['COLOR_ID'];?>"
+								id=<?php echo $row['COLOR_ID'];?>
 
-								<?php
-								if (isBlank($_SESSION['color'])) {
-									$_SESSION['color'] = 3;
-								};
+							<?php
+							if (isBlank($_SESSION['color'])) {
+								$_SESSION['color'] = "3";
+							}
 
-								if ($_SESSION['color'] == $row['COLOR_ID']) {
-									echo checked;
-								}
+							if ($_SESSION['color'] == $row['COLOR_ID']) {
+								echo "checked";
+							}
 
-								?>>
+							?>>
 
-								<label for=<?php echo $row['COLOR_ID']; ?> style="color:#<?php echo $row['COLOR_CODE'];?>" ><?php echo $row['COLOR_NAME']; ?></label>
-							<?php } ?>
+							<label for=<?php echo $row['COLOR_ID']; ?> style="color:#<?php echo $row['COLOR_CODE'];?>" >
+								<?php echo $row['COLOR_NAME']; ?></label>
+						<?php } ?>
 
 						</div></td>
 					</tr>
@@ -138,18 +153,31 @@ if (isset($_POST['clear'])) {
 			<div>
 				<input class="button" type="submit" name="clear" value="クリア">
 				<input class="button" type="submit" name="submit" value="確認">
-				<?php
+					<?php
 					$token = hash(sha256, session_id());
 					$_SESSION['token'] = $token;
-				?>
+					?>
 					<input type="hidden" name="token" value="<?php echo $token ?>">
 			</div>
 		</form>
 		<hr>
 		<?php
-			$stmt2 = $db->getDbconnect()->prepare("select ARTICLE_ID, CREATE_DATE, NAME, EMAIL, TITLE, TEXT, COLOR_CODE from ARTICLE A inner JOIN COLOR_MASTER B on A.COLOR_ID = B.COLOR_ID order by CREATE_DATE DESC;");
-			$stmt2->execute();
-			while ($row2 = $stmt2->fetch()) {
+		$stmt2 = $db->getDbconnect()->prepare(
+				"select
+					A.ARTICLE_ID,
+					A.CREATE_DATE,
+					A.NAME,
+					A.EMAIL,
+					A.TITLE,
+					A.TEXT,
+					B.COLOR_CODE
+				from
+					ARTICLE A
+					inner JOIN COLOR_MASTER B
+					on A.COLOR_ID = B.COLOR_ID
+				order by A.CREATE_DATE desc;");
+		$stmt2->execute();
+		while ($row2 = $stmt2->fetch()) {
 		?>
 		<div>
 			<table class="postedArticle" style="color:#<?php echo $row2['COLOR_CODE']; ?>">
@@ -182,14 +210,15 @@ if (isset($_POST['clear'])) {
 						if (isBlank($row2['EMAIL'])) {
 							echo htmlspecialchars($name, ENT_QUOTES, "UTF-8");
 						}else{ ?>
-							<a href="mailto:<?php echo $row2['EMAIL'];?>"><?php echo htmlspecialchars($name, ENT_QUOTES, "UTF-8"); ?></a>
-						<?php }?>
+							<a href="mailto:<?php echo $row2['EMAIL'];?>"><?php
+							echo htmlspecialchars($name, ENT_QUOTES, "UTF-8"); ?></a>
+				<?php } ?>
 					</div></td>
 				</tr>
 			</table>
 			</div>
 		</div>
-		<?php } ?>
+	<?php } ?>
 </main>
 </body>
 </html>
