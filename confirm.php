@@ -89,7 +89,7 @@ if ($_SESSION['actionName'] == "input_check") {
 <main>
 	<div>
 		<p>以下の内容で投稿します。</p>
-		<form method="POST">
+		<form action="./confirm.php" method="POST">
 			<div>
 			<table class="inputArticle">
 				<tr>
